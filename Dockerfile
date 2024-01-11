@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o .
 
 # Use a alpine container as the base image for the final application
 FROM alpine:latest
