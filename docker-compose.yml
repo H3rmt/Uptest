@@ -1,0 +1,12 @@
+version: '3'
+services:
+  uptest:
+    # image: your_image_name
+    build: .
+    ports:
+      - 8086:80
+    volumes:
+      - ./logs:/logs
+      - ./responses:/responses
+    environment:
+      - URLS=www.google.com=google,www.yahoo.com=yahoo
