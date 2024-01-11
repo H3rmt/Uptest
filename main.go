@@ -15,13 +15,32 @@ import (
 )
 
 func main() {
+	_, err := os.Stat("responses")
+	if os.IsNotExist(err) {
+		err := os.Mkdir("responses", 0755)
+		if err != nil {
+			log.Printf("Error creating responses directory: %v", err)
+		}
+	}
+
+	_, err = os.Stat("logs")
+	if os.IsNotExist(err) {
+		err := os.Mkdir("logs", 0755)
+		if err != nil {
+			log.Printf("Error creating logs directory: %v", err)
+		}
+	}
+
+	urls := os.Getenv("URLS")
+	if urls == "" {
+		log.Fatal("No URLS environment variable found")
+	}
+
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "favicon.ico")
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		Check()
-
 		logs := make(map[Site][]Log)
 		files, err := os.ReadDir("logs")
 		if err != nil {
@@ -73,7 +92,25 @@ func main() {
 		tmpl.Execute(w, logs)
 	})
 
-	log.Fatal(http.ListenAndServe(":80", nil))
+	http.HandleFunc("/check", func(w http.ResponseWriter, r *http.Request) {
+		var wg sync.WaitGroup
+		for _, url := range strings.Split(urls, ",") {
+			urlRegex := strings.Split(url, "=")
+			if len(urlRegex) != 2 {
+				log.Fatalf("Invalid URLS environment variable: %s", url)
+			}
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				CheckUrl(urlRegex[0], urlRegex[1])
+			}()
+		}
+		wg.Wait()
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 type Site struct {
@@ -87,43 +124,6 @@ type Log struct {
 	Time  string
 	Delay string
 	Error string
-}
-
-func Check() {
-	_, err := os.Stat("responses")
-	if os.IsNotExist(err) {
-		err := os.Mkdir("responses", 0755)
-		if err != nil {
-			log.Printf("Error creating responses directory: %v", err)
-		}
-	}
-
-	_, err = os.Stat("logs")
-	if os.IsNotExist(err) {
-		err := os.Mkdir("logs", 0755)
-		if err != nil {
-			log.Printf("Error creating logs directory: %v", err)
-		}
-	}
-
-	urls := os.Getenv("URLS")
-	if urls == "" {
-		log.Fatal("No URLS environment variable found")
-	}
-
-	var wg sync.WaitGroup
-	for _, url := range strings.Split(urls, ",") {
-		urlRegex := strings.Split(url, "=")
-		if len(urlRegex) != 2 {
-			log.Fatalf("Invalid URLS environment variable: %s", urls)
-		}
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			CheckUrl(urlRegex[0], urlRegex[1])
-		}()
-	}
-	wg.Wait()
 }
 
 func CheckUrl(uri string, regex string) {
