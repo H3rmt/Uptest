@@ -88,8 +88,16 @@ func main() {
 			}
 		}
 
+		data := struct {
+			Logs map[Site][]Log
+			Time string
+		}{
+			Logs: logs,
+			Time: time.Now().Format("2006-01-02 15:04:05"),
+		}
+
 		tmpl := template.Must(template.ParseFiles("index.html"))
-		tmpl.Execute(w, logs)
+		tmpl.Execute(w, data)
 	})
 
 	http.HandleFunc("/check", func(w http.ResponseWriter, r *http.Request) {

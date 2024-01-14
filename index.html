@@ -10,11 +10,12 @@
 <body>
     <div style="display: flex; justify-content: space-between;">
         <h1 style="margin-block: 0;">Uptest</h1>
+        <h2 style="margin-block: 0;">{{ .Time }}</h2>
         <form style="display: flex;" action="/check">
             <input type="submit" value="Test now">
         </form>
     </div>
-    {{ range $site, $logs := . }}
+    {{ range $site, $logs := .Logs }}
     <div style="border: solid black 2px; margin-top: 1rem;padding: 0.5rem;">
         <h2 style="margin-top: 0;">{{ $site.Url }} checking for ({{ $site.Regex }})</h2>
         <table style="border-spacing: 0.5rch 0.3rem;width: 100%;">
