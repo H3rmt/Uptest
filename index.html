@@ -15,28 +15,24 @@
             <input type="submit" value="Test now">
         </form>
     </div>
-    {{ range $site, $logs := .Logs }}
-    <div style="border: solid black 2px; margin-top: 1rem;padding: 0.5rem;">
-        <h2 style="margin-top: 0;">{{ $site.Url }} checking for ({{ $site.Regex }})</h2>
-        <table style="border-spacing: 0.5rch 0.3rem;width: 100%;">
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>Delay</th>
-                    <th>Error</th>
-                </tr>
-            </thead>
-            <tbody>
+    <div
+        style="display: grid; gap: 1rem;margin-top: 1rem; grid-template-columns: repeat(auto-fill, minmax(60ch, 1fr));">
+        {{ range $site, $logs := .Logs }}
+        <div style="border: solid black 2px; padding: 0.5rem; border-radius: 0.5rem;">
+            <h2 style="margin-top: 0;">{{ $site.Url }} checking for ({{ $site.Regex }})</h2>
+            <div style="display: grid; grid-template-columns: 20ch auto auto;">
+                <span style="font-weight: bold;">Time</span>
+                <span style="font-weight: bold;">Delay</span>
+                <span style="font-weight: bold;">Error</span>
                 {{ range $log := $logs }}
-                <tr>
-                    <td>{{ $log.Time }}</td>
-                    <td>{{ $log.Delay }}</td>
-                    <td>{{ $log.Error }}</td>
-                </tr>
+                <span>{{ $log.Time }}</span>
+                <span>{{ $log.Delay }}</span>
+                <span>{{ $log.Error }}</span>
                 {{ end }}
-        </table>
+            </div>
+        </div>
+        {{ end }}
     </div>
-    {{ end }}
 </body>
 
 </html>

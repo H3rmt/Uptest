@@ -76,9 +76,16 @@ func main() {
 			for fileScanner.Scan() {
 				line := fileScanner.Text()
 
-				time := strings.TrimSpace(strings.Split(line, "|")[0])
-				delay := strings.TrimSpace(strings.Split(strings.Split(line, "|")[1], ">")[0])
-				err := strings.TrimSpace(strings.Split(strings.Split(line, "|")[1], ">")[1])
+				// remove from string until first pipe is found
+				first := strings.SplitN(line, "|", 2)
+				time := first[0]
+				second := strings.SplitN(first[1], ">", 2)
+				delay := second[0]
+				err := second[1]
+
+				// time := strings.TrimSpace(strings.Split(line, "|")[0])
+				// delay := strings.TrimSpace(strings.Split(strings.Split(line, "|")[1], ">")[0])
+				// err := strings.TrimSpace(strings.Split(strings.Split(line, "|")[1], ">")[1])
 
 				logs[site] = append(logs[site], Log{
 					Time:  time,
@@ -118,7 +125,7 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
-	log.Fatal(http.ListenAndServe(":80", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 type Site struct {
