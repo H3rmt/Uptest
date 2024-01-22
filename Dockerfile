@@ -23,6 +23,7 @@ FROM alpine:latest
 COPY --from=builder /app/Uptest /
 COPY index.html /
 COPY favicon.ico /
+COPY style.css /
 
 # Set the entry point for the container
 ENTRYPOINT ["/Uptest"]

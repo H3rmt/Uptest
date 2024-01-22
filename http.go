@@ -88,6 +88,14 @@ func RunHttp() {
 	// serve files from responses directory
 	e.Static("/responses", "responses")
 
+	e.GET("/favicon.ico", func(c echo.Context) error {
+		return c.File("favicon.ico")
+	})
+
+	e.GET("/style.css", func(c echo.Context) error {
+		return c.File("style.css")
+	})
+
 	e.GET("/", func(c echo.Context) error {
 		files, err := os.ReadDir("logs")
 		if err != nil {

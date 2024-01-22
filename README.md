@@ -7,9 +7,9 @@ docker-compose.yml
 version: '3'
 services:
   uptest:
-    image: image: h3rmt/uptest
+    image: h3rmt/uptest
     ports:
-      - 8080:80
+      - 8080:8080
     volumes:
       - ./logs:/logs
       - ./responses:/responses

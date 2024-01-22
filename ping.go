@@ -47,14 +47,14 @@ func CheckUrl(uri string, regex string) {
 			}
 		}
 
-		path := fmt.Sprintf("responses/%s.d/%s", escapedURI, currentTime)
+		path := fmt.Sprintf("responses/%s.d/%s.html", escapedURI, currentTime)
 		err = os.WriteFile(path, data, 0644)
 		if err != nil {
 			log.Printf("Error writing response to file: %v", err)
 		}
 		logFile.WriteString(fmt.Sprintf(" > [%s]", errPing))
 	} else {
-		path := fmt.Sprintf("responses/%s", escapedURI)
+		path := fmt.Sprintf("responses/%s.html", escapedURI)
 		err = os.WriteFile(path, data, 0644)
 		if err != nil {
 			log.Printf("Error writing response to file: %v", err)

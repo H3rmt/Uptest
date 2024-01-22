@@ -1,0 +1,83 @@
+:root {
+    --text: #000;
+    --bg: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #fff;
+        --bg: #000;
+    }
+}
+
+h2,
+h1 {
+    margin-block: 0;
+}
+
+body {
+    font-family: "Source Sans Pro", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+nav>form {
+    display: flex;
+}
+
+nav>form>input {
+    border: solid var(--text) 2px;
+    background: transparent;
+    border-radius: 0.5rem;
+    color: var(--text);
+}
+
+main {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(60ch, 1fr));
+}
+
+.entry {
+    border: solid var(--text) 3px;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.entry h2 {
+    cursor: pointer;
+}
+
+.entry>.logs {
+    display: grid;
+    gap: 0.3rem;
+    grid-template-columns: 20ch auto auto;
+}
+
+.entry>.logs>.heading {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.entry>.logs>.error {
+    color: red;
+    cursor: pointer;
+}
+
+.entry>.preview>iframe {
+    width: calc(100% - 4px);
+    height: 30rem;
+    border: solid var(--text) 2px;
+    border-radius: 0.3rem;
+    background: #bababa;
+}
