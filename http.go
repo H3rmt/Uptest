@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func readLogs(files []fs.DirEntry) map[Site][]Log {
