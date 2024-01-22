@@ -8,31 +8,121 @@
 </head>
 
 <body>
-    <div style="display: flex; justify-content: space-between;">
-        <h1 style="margin-block: 0;">Uptest</h1>
-        <h2 style="margin-block: 0;">{{ .Time }}</h2>
-        <form style="display: flex;" action="/check">
+    <style>
+        :root {
+            --text: #000;
+            --bg: #fff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text: #fff;
+                --bg: #000;
+            }
+        }
+
+        h2,
+        h1 {
+            margin-block: 0;
+        }
+
+        body {
+            font-family: "Source Sans Pro", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        nav>form {
+            display: flex;
+        }
+
+        nav>form>input {
+            border: solid var(--text) 2px;
+            background: transparent;
+            border-radius: 0.5rem;
+            color: var(--text);
+        }
+
+        main {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(60ch, 1fr));
+        }
+
+        .entry {
+            border: solid var(--text) 3px;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .entry h2 {
+            cursor: pointer;
+        }
+
+        .entry>.logs {
+            display: grid;
+            gap: 0.3rem;
+            grid-template-columns: 20ch auto auto;
+        }
+
+        .entry>.logs>.heading {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .entry>.logs>.error {
+            color: red;
+            cursor: pointer;
+        }
+
+        .entry>.preview>iframe {
+            width: calc(100% - 4px);
+            height: 30rem;
+            border: solid var(--text) 2px;
+            border-radius: 0.3rem;
+        }
+    </style>
+    <nav>
+        <h1>Uptest</h1>
+        <h2>{{ .Time }}</h2>
+        <form action="/check">
             <input type="submit" value="Test now">
         </form>
-    </div>
-    <div
-        style="display: grid; gap: 1rem;margin-top: 1rem; grid-template-columns: repeat(auto-fill, minmax(60ch, 1fr));">
+    </nav>
+    <main>
         {{ range $site, $logs := .Logs }}
-        <div style="border: solid black 2px; padding: 0.5rem; border-radius: 0.5rem;">
-            <h2 style="margin-top: 0;">{{ $site.Url }} checking for ({{ $site.Regex }})</h2>
-            <div style="display: grid; grid-template-columns: 20ch auto auto;">
-                <span style="font-weight: bold;">Time</span>
-                <span style="font-weight: bold;">Delay</span>
-                <span style="font-weight: bold;">Error</span>
+        <div class="entry">
+            <h2 onclick="document.getElementById('error-{{ $site.Url }}').src = '/responses/{{ $site.EscapedUrl }}'">{{ $site.Url }} checking for <i>({{ $site.Regex }})</i></h2>
+            <div class="logs">
+                <span class="heading">Time</span>
+                <span class="heading">Delay</span>
+                <span class="heading">Error</span>
                 {{ range $log := $logs }}
                 <span>{{ $log.Time }}</span>
                 <span>{{ $log.Delay }}</span>
-                <span>{{ $log.Error }}</span>
+                {{ if ne $log.Error "[OK]" }}
+                <span class="error" onclick="document.getElementById('error-{{ $site.Url }}').src = '/responses/{{ $site.EscapedUrl }}.d/{{ $log.Time }}'">{{ $log.Error }}</span>
+                {{ else }}
+                <span></span>
                 {{ end }}
+                {{ end }}
+            </div>
+            <div class="preview">
+                <iframe id="error-{{ $site.Url }}" src="/responses/{{ $site.EscapedUrl }}" referrerpolicy="no-referrer" sandbox></iframe>
             </div>
         </div>
         {{ end }}
-    </div>
+    </main>
 </body>
 
 </html>
