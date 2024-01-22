@@ -90,6 +90,7 @@
             height: 30rem;
             border: solid var(--text) 2px;
             border-radius: 0.3rem;
+            background: white;
         }
     </style>
     <nav>
@@ -118,7 +119,7 @@
                 {{ end }}
             </div>
             <div class="preview">
-                <iframe id="error-{{ $site.Url }}" src="/responses/{{ $site.EscapedUrl }}" referrerpolicy="no-referrer"></iframe>
+                <iframe id="error-{{ $site.Url }}" src="/responses/{{ $site.EscapedUrl }}" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>
             </div>
         </div>
         {{ end }}
