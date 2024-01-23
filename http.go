@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -17,13 +18,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func readLogs(files []fs.DirEntry) map[Site][]Log {
+func readLogs(files []fs.DirEntry) (map[Site][]Log, error) {
 	logs := make(map[Site][]Log)
 	for _, file := range files {
 		logFile, err := os.Open(fmt.Sprintf("logs/%s", file.Name()))
 		if err != nil {
 			log.Printf("Error opening log file: %v", err)
-			break
+			return nil, err
 		}
 		defer logFile.Close()
 
@@ -66,7 +67,32 @@ func readLogs(files []fs.DirEntry) map[Site][]Log {
 		}
 	}
 
-	return logs
+	return logs, nil
+}
+
+func readInfo() (Info, error) {
+	versionFile, err := os.Open("info.json")
+	if err != nil {
+		log.Printf("Error opening version file: %v", err)
+		return Info{}, err
+	}
+	defer versionFile.Close()
+
+	// read JSON file with json
+	var info Info
+	err = json.NewDecoder(versionFile).Decode(&info)
+	if err != nil {
+		log.Printf("Error decoding version file: %v", err)
+		return Info{}, err
+	}
+
+	return info, nil
+}
+
+type Info struct {
+	Version string `json:"version"`
+	Commits string `json:"commits"`
+	Date    string `json:"date"`
 }
 
 type Template struct {
@@ -96,19 +122,35 @@ func RunHttp() {
 		return c.File("style.css")
 	})
 
+	e.GET("/info", func(c echo.Context) error {
+		return c.File("info.json")
+	})
+
 	e.GET("/", func(c echo.Context) error {
 		files, err := os.ReadDir("logs")
 		if err != nil {
 			log.Printf("Error reading logs directory: %v", err)
+			return c.String(http.StatusInternalServerError, "Error reading logs directory")
 		}
-		logs := readLogs(files)
+		logs, err := readLogs(files)
+		if err != nil {
+			log.Printf("Error reading logs: %v", err)
+			return c.String(http.StatusInternalServerError, "Error reading logs directory")
+		}
+		info, err := readInfo()
+		if err != nil {
+			log.Printf("Error reading info: %v", err)
+			return c.String(http.StatusInternalServerError, "Error reading logs directory")
+		}
 
 		data := struct {
-			Logs map[Site][]Log
-			Time string
+			Logs    map[Site][]Log
+			Version string
+			Time    string
 		}{
-			Logs: logs,
-			Time: time.Now().Format("2006-01-02 15:04:05"),
+			Logs:    logs,
+			Version: info.Version,
+			Time:    time.Now().Format("2006-01-02 15:04:05"),
 		}
 		return c.Render(http.StatusOK, "index.html", data)
 	})

@@ -11,7 +11,8 @@
 }
 
 h2,
-h1 {
+h1,
+h5 {
     margin-block: 0;
 }
 
@@ -26,6 +27,16 @@ nav {
     justify-content: space-between;
 }
 
+nav>span {
+    display: flex;
+    gap: 0.5rem;
+    align-items: start;
+}
+
+nav>span>h5 {
+    font-size: 0.6rem;
+}
+
 nav>form {
     display: flex;
 }
@@ -35,6 +46,7 @@ nav>form>input {
     background: transparent;
     border-radius: 0.5rem;
     color: var(--text);
+    cursor: pointer;
 }
 
 main {

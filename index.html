@@ -5,13 +5,16 @@
     <title>Uptests</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <nav>
         <h1>Uptest</h1>
-        <h2>{{ .Time }}</h2>
+        <span>
+            <h2>{{ .Time }}</h2>
+            <h5>Version:{{ .Version }}</h5>
+        </span>
         <form action="/check">
             <input type="submit" value="Test now">
         </form>
@@ -19,7 +22,9 @@
     <main>
         {{ range $site, $logs := .Logs }}
         <div class="entry">
-            <h2 onclick="document.getElementById('error-{{ $site.Url }}').src = '/responses/{{ $site.EscapedUrl }}.html'">{{ $site.Url }} checking for <i>({{ $site.Regex }})</i></h2>
+            <h2
+                onclick="document.getElementById('error-{{ $site.Url }}').src = '/responses/{{ $site.EscapedUrl }}.html'">
+                {{ $site.Url }} checking for <i>({{ $site.Regex }})</i></h2>
             <div class="logs">
                 <span class="heading">Time</span>
                 <span class="heading">Delay</span>
@@ -28,14 +33,17 @@
                 <span>{{ $log.Time }}</span>
                 <span>{{ $log.Delay }}</span>
                 {{ if ne $log.Error "[OK]" }}
-                <span class="error" onclick="document.getElementById('error-{{ $site.Url }}').src = '/responses/{{ $site.EscapedUrl }}.d/{{ $log.Time }}.html'">{{ $log.Error }}</span>
+                <span class="error"
+                    onclick="document.getElementById('error-{{ $site.Url }}').src = '/responses/{{ $site.EscapedUrl }}.d/{{ $log.Time }}.html'">{{
+                    $log.Error }}</span>
                 {{ else }}
                 <span></span>
                 {{ end }}
                 {{ end }}
             </div>
             <div class="preview">
-                <iframe id="error-{{ $site.Url }}" src="/responses/{{ $site.EscapedUrl }}.html" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>
+                <iframe id="error-{{ $site.Url }}" src="/responses/{{ $site.EscapedUrl }}.html"
+                    referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>
             </div>
         </div>
         {{ end }}
