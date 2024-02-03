@@ -14,5 +14,5 @@ services:
       - ./logs:/logs
       - ./responses:/responses
     environment:
-      - URLS=www.google.com=google,www.yahoo.com=yahoo
+      - URLS="www.google.com:google,www.yahoo.com?s=1test: yahoo"
 ```

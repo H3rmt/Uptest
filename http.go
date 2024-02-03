@@ -158,7 +158,7 @@ func RunHttp() {
 	e.GET("/check", func(c echo.Context) error {
 		var wg sync.WaitGroup
 		for _, url := range strings.Split(os.Getenv("URLS"), ",") {
-			urlRegex := strings.Split(url, "=")
+			urlRegex := strings.Split(url, ":")
 			if len(urlRegex) != 2 {
 				log.Fatalf("Invalid URLS environment variable: %s", url)
 			}

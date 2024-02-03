@@ -1,11 +1,12 @@
 version: '3'
 services:
   uptest:
-    image: h3rmt/uptest
+    # image: h3rmt/uptest
+    build: .
     ports:
       - 8080:8080
     volumes:
       - ./logs:/logs
       - ./responses:/responses
     environment:
-      - URLS=www.google.com=google,www.yahoo.com=yahoo
+      - URLS="www.google.com:google,www.yahoo.com:yahoo"
