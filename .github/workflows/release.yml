@@ -2,7 +2,7 @@ name: Release
 
 on:
   release:
-    types: [prereleased, released]
+    types: [released]
 
 jobs:
   build:
@@ -49,6 +49,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v5
         with:
+          context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name-canonical=true,push=true,push-by-digest=true,name=${{ vars.REGISTRY_IMAGE }}
@@ -58,7 +59,7 @@ jobs:
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
       - name: Upload digest
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: digests
           path: /tmp/digests/*
@@ -74,7 +75,7 @@ jobs:
       packages: write
     steps:
       - name: Download digests
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: digests
           path: /tmp/digests
