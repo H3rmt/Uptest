@@ -123,7 +123,13 @@ func RunHttp() {
 	})
 
 	e.GET("/info", func(c echo.Context) error {
-		return c.File("info.json")
+		info, err := readInfo()
+		if err != nil {
+			log.Printf("Error reading info: %v", err)
+			return c.String(http.StatusInternalServerError, "Error reading info")
+		}
+
+		return c.JSON(http.StatusOK, info)
 	})
 
 	e.GET("/", func(c echo.Context) error {
@@ -140,7 +146,7 @@ func RunHttp() {
 		info, err := readInfo()
 		if err != nil {
 			log.Printf("Error reading info: %v", err)
-			return c.String(http.StatusInternalServerError, "Error reading logs directory")
+			return c.String(http.StatusInternalServerError, "Error reading info")
 		}
 
 		data := struct {

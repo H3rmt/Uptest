@@ -1,18 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"time"
 )
 
 func main() {
-	current_time := time.Now()
-	currentTimeZone, offset := current_time.Zone()
-	fmt.Println("The Current time zone is:", currentTimeZone)
-	fmt.Println("Time zone offset:", offset)
-
 	check()
 	RunHttp()
 }

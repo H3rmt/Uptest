@@ -18,13 +18,15 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o .
 
 # Use a alpine container as the base image for the final application
 FROM alpine:latest
+# Timezone
+RUN apk add --no-cache tzdata
 
 # Copy the built Go application from the builder stage
-COPY --from=builder /app/Uptest /
-COPY index.html /
-COPY favicon.ico /
-COPY style.css /
-COPY info.json /
+COPY --from=builder /app/Uptest /Uptest
+COPY index.html /index.html
+COPY favicon.ico /favicon.ico
+COPY style.css /style.css
+COPY info.json /info.json
 
 # Set the entry point for the container
 ENTRYPOINT ["/Uptest"]
