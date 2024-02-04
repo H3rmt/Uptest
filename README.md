@@ -13,6 +13,8 @@ services:
     volumes:
       - ./logs:/logs
       - ./responses:/responses
+      # mount timezone file
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - URLS="www.google.com:google,www.yahoo.com?s=1test: yahoo"
 ```
