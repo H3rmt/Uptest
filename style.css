@@ -74,6 +74,9 @@ main {
     display: grid;
     gap: 0.3rem;
     grid-template-columns: 20ch auto auto;
+
+    overflow-y: scroll;
+    height: 35vh;
 }
 
 .entry>.logs>.heading {
