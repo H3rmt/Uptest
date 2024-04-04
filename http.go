@@ -65,6 +65,9 @@ func readLogs(files []fs.DirEntry) (map[Site][]Log, error) {
 				Error: err,
 			})
 		}
+		for i, j := 0, len(logs[site])-1; i < j; i, j = i+1, j-1 {
+			logs[site][i], logs[site][j] = logs[site][j], logs[site][i]
+		}
 	}
 
 	return logs, nil
